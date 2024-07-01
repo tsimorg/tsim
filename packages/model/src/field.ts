@@ -1,6 +1,6 @@
+import { ClassType, Dictionary, FieldMeta, FieldMetaOptions, FieldOptions, FieldsTarget, ValidationFn } from '@tsim/model/types';
+import { IsBoolean, IsDate, IsNumber, IsString } from '@tsim/model/validate';
 import { cloneDeep, isArray } from 'lodash';
-import { ClassType, Dictionary, FieldMeta, FieldMetaOptions, FieldOptions, FieldsTarget, ValidationFn } from './types';
-import { IsBoolean, IsDate, IsNumber, IsString } from './validate';
 
 export function Field(type: ClassType | [ClassType], required: boolean, options: FieldOptions = {}): PropertyDecorator {
   return (target: FieldsTarget, propertyKey: string | symbol) => {

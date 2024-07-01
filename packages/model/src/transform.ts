@@ -1,5 +1,5 @@
-import { get, isArray, isDate, isMap, isObject, isSet, isString, isUndefined, set } from 'lodash';
-import { ClassType, Dictionary, FieldMeta, FieldsTarget } from './types';
+import { ClassType, Dictionary, FieldMeta, FieldsTarget } from '@tsim/model/types';
+import { get, isArray, isDate, isObject, isString, isUndefined, set } from 'lodash';
 
 export function serialize(target: object): Dictionary {
   const record: Dictionary = {};
@@ -72,10 +72,6 @@ function getValue(value: unknown, meta: FieldMeta): unknown {
     value = String(value);
   } else if (meta.type.name === Date.name && isString(value)) {
     value = new Date(value);
-  } else if (meta.type.name === Map.name && isArray(value)) {
-    value = new Map(value);
-  } else if (meta.type.name === Set.name && isArray(value)) {
-    value = new Set(value);
   }
   return value;
 }
@@ -83,10 +79,6 @@ function getValue(value: unknown, meta: FieldMeta): unknown {
 function serializeValue(value: unknown): unknown {
   if (isDate(value)) {
     value = value.toISOString();
-  } else if (isMap(value)) {
-    value = Array.from(value.entries());
-  } else if (isSet(value)) {
-    value = Array.from(value.values());
   }
   return value;
 }

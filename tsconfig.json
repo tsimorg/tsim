@@ -17,6 +17,10 @@
     "target": "ES2022",
     "module": "CommonJS",
     "useDefineForClassFields": false,
-    "lib": ["ES2022", "dom"]
+    "lib": ["ES2022", "dom"],
+    "paths": {
+      "@tsim/model/*": ["packages/model/src/*"],
+      "@tsim/model-test/*": ["packages/model/test/*"]
+    }
   }
 }

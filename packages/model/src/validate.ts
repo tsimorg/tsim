@@ -1,5 +1,5 @@
-import { get, isArray, isBoolean, isDate, isMap, isNil, isNumber, isSet, isString, isUndefined } from 'lodash';
-import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from './types';
+import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from '@tsim/model/types';
+import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isSet, isString, isUndefined } from 'lodash';
 
 export function validate(target: object): ValidationError[] {
   const proto: FieldsTarget = target.constructor.prototype;
@@ -67,7 +67,7 @@ export const IsBoolean =
 export const IsNumber =
   (): ValidationFn =>
   ({ value }) =>
-    isNumber(value) ? null : { message: 'Value is not number' };
+    isNumber(value) && !isNaN(value) ? null : { message: 'Value is not number' };
 export const IsDate =
   (): ValidationFn =>
   ({ value }) =>

@@ -1,6 +1,6 @@
-import { deserialize, serialize } from './transform';
-import { ClassType, Dictionary, FieldMeta, ValidationError } from './types';
-import { validate } from './validate';
+import { deserialize, serialize } from '@tsim/model/transform';
+import { ClassType, Dictionary, FieldMeta, ValidationError } from '@tsim/model/types';
+import { validate } from '@tsim/model/validate';
 
 export function create<T extends Model>(target: ClassType<T>, data: Dictionary): T {
   const model = deserialize(target, data);
