@@ -1,0 +1,10 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2015",
+    "declarationDir": "../../build/model/types",
+    "outDir": "../../build/model/esm"
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": ["**/*.spec.ts"]
+}
