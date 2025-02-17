@@ -12,11 +12,15 @@ export type FieldMetaOptions = FieldOptions & { isArray: boolean };
 export type FieldOptions = {
   alias?: string;
   exclude?: boolean;
+  extra?: Dictionary;
+  groups?: string[];
   nested?: boolean;
   toModel?: TransformFn;
   toObject?: TransformFn;
   validators?: ValidationFn[];
 };
+export type FieldEffect = (input: FieldEffectInput) => void;
+export type FieldEffectInput = { target: object; property: string; meta: FieldMeta };
 export type TransformFn = (value: unknown, data: Dictionary, property: string) => unknown;
 export type ValidationParams = {
   target: object;

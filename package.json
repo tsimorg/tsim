@@ -5,6 +5,7 @@
   "author": "@tsim",
   "license": "ISC",
   "scripts": {
+    "build": "npm run build-model",
     "build-model": "node build-pkg.js model",
     "lint": "eslint packages",
     "lint-fix": "prettier packages --write --log-level warn && eslint packages --fix",
