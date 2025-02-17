@@ -1,3 +1,4 @@
+import { applyFieldEffect } from '@tsim/model/effect';
 import { ClassType, Dictionary, FieldMeta, FieldMetaOptions, FieldOptions, FieldsTarget, ValidationFn } from '@tsim/model/types';
 import { IsBoolean, IsDate, IsNumber, IsString } from '@tsim/model/validate';
 import { cloneDeep, isArray } from 'lodash';
@@ -22,6 +23,8 @@ export function Field(type: ClassType | [ClassType], required: boolean, options:
     const fields: Dictionary<FieldMeta> = cloneDeep(target.__fields ?? {});
     fields[property] = { required, type: metaType, options: metaOptions };
     target.__fields = fields;
+
+    applyFieldEffect({ target, property, meta: fields[property] });
   };
 }
 

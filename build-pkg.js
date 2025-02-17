@@ -1,7 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { exec } = require('node:child_process');
-const { writeFileSync, rmSync } = require('node:fs');
+const { writeFileSync, rmSync, copyFileSync } = require('node:fs');
 const process = require('node:process');
 const { promisify } = require('node:util');
 
@@ -46,11 +46,16 @@ function buildPackage() {
   writeFileSync(`./build/${package}/package.json`, pkgContent, { encoding: 'utf8' });
 }
 
+function copyAssets() {
+  copyFileSync(`./packages/${package}/README.md`, `./build/${package}/README.md`);
+}
+
 async function main() {
   clearBuild();
   await buildCjs();
   await buildEsm();
   buildPackage();
+  copyAssets();
 }
 
 main().catch(console.error);
