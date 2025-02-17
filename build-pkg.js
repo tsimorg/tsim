@@ -30,7 +30,7 @@ function buildPackage() {
   pkg.author = root.author;
   pkg.description = root.description;
   pkg.license = root.license;
-  pkg.version = root.version;
+  pkg.version = pkgFile.version;
   pkg.repository = {
     type: 'git',
     url: 'https://github.com/tsimorg/tsim.git',
