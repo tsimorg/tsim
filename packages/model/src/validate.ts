@@ -39,8 +39,8 @@ export function validate(target: object): ValidationError[] {
 
 function validateField(params: ValidationParams, meta: FieldMeta, validators: ValidationFn[] = []): ValidationError[] {
   const errors: ValidationError[] = [];
-  validators = validators.length ? validators : meta.options?.validators ?? [];
-  for (const validator of validators) {
+  const fieldValidators = validators.length ? validators : meta.options?.validators ?? [];
+  for (const validator of fieldValidators) {
     const result = validator(params);
     if (result !== null) errors.push({ ...params, ...result });
   }
