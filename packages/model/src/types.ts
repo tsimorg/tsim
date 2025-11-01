@@ -11,6 +11,7 @@ export type FieldMeta = {
 export type FieldMetaOptions = FieldOptions & { isArray: boolean };
 export type FieldOptions = {
   alias?: string;
+  arrayValidators?: ValidationFn[];
   exclude?: boolean;
   extra?: Dictionary;
   groups?: string[];
