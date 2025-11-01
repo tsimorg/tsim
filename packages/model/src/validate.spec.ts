@@ -1,7 +1,20 @@
 import { User, USER_DATA } from '@tsim/model-test/fixtures';
 import { Field } from '@tsim/model/field';
 import { deserialize } from '@tsim/model/transform';
-import { IsIn, IsInstance, IsMap, IsSet, Max, MaxLength, Min, MinLength, validate } from '@tsim/model/validate';
+import {
+  IsIn,
+  IsInstance,
+  IsMap,
+  IsObject,
+  IsSet,
+  Max,
+  MaxArrayLength,
+  MaxLength,
+  Min,
+  MinArrayLength,
+  MinLength,
+  validate,
+} from '@tsim/model/validate';
 
 describe('validate', () => {
   it('should validate', () => {
@@ -17,6 +30,19 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('age');
+  });
+
+  it('should validate IsObject', () => {
+    class ModelClass {
+      @Field(Object, true, { validators: [IsObject()] })
+      value!: object;
+    }
+
+    const model = deserialize(ModelClass, { value: 'baz' });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toBe('value');
   });
 
   it('should validate IsIn', () => {
@@ -126,5 +152,43 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate MinListCount', () => {
+    class ModelClass {
+      @Field([Number], true, { arrayValidators: [MinArrayLength(2)] })
+      values!: number[];
+    }
+
+    const model = deserialize(ModelClass, { values: [1] });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toBe('values');
+  });
+
+  it('should validate MaxArrayLength', () => {
+    class ModelClass {
+      @Field([Number], true, { arrayValidators: [MaxArrayLength(2)] })
+      values!: number[];
+    }
+
+    const model = deserialize(ModelClass, { values: [1, 2, 3] });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toBe('values');
+  });
+
+  it('should validate array with no errors', () => {
+    class ModelClass {
+      @Field([Number], true, { arrayValidators: [MinArrayLength(2), MaxArrayLength(5)] })
+      values!: number[];
+    }
+
+    const model = deserialize(ModelClass, { values: [1, 2, 3] });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
   });
 });

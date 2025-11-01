@@ -1,5 +1,5 @@
 import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from '@tsim/model/types';
-import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isSet, isString, isUndefined } from 'lodash';
+import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isObject, isSet, isString, isUndefined } from 'lodash';
 
 export function validate(target: object): ValidationError[] {
   const proto: FieldsTarget = target.constructor.prototype;
@@ -19,6 +19,9 @@ export function validate(target: object): ValidationError[] {
         if (arrayValid !== null) {
           errors.push({ ...params, ...arrayValid });
         } else if (isArray(value)) {
+          if (meta.options?.arrayValidators) {
+            errors.push(...validateField(params, meta, meta.options?.arrayValidators));
+          }
           value.forEach(item => errors.push(...validateField({ target, property, value: item }, meta)));
         }
       } else {
@@ -34,10 +37,10 @@ export function validate(target: object): ValidationError[] {
   return errors;
 }
 
-function validateField(params: ValidationParams, meta: FieldMeta) {
+function validateField(params: ValidationParams, meta: FieldMeta, validators: ValidationFn[] = []): ValidationError[] {
   const errors: ValidationError[] = [];
-  const validators = meta.options?.validators ?? [];
-  for (const validator of validators) {
+  const fieldValidators = validators.length ? validators : meta.options?.validators ?? [];
+  for (const validator of fieldValidators) {
     const result = validator(params);
     if (result !== null) errors.push({ ...params, ...result });
   }
@@ -52,6 +55,10 @@ export const IsArray =
   (): ValidationFn =>
   ({ value }) =>
     isArray(value) ? null : { message: 'Value is not array' };
+export const IsObject =
+  (): ValidationFn =>
+  ({ value }) =>
+    isObject(value) ? null : { message: 'Value is not object' };
 export const IsIn =
   (values: unknown[]): ValidationFn =>
   ({ value }) =>
@@ -100,3 +107,11 @@ export const Min =
   (limit: number): ValidationFn =>
   ({ value }) =>
     isNumber(value) && value >= limit ? null : { message: 'Min value is [0]', params: [limit.toString()] };
+export const MinArrayLength =
+  (count: number): ValidationFn =>
+  ({ value }) =>
+    isArray(value) && value.length >= count ? null : { message: 'Min array length is [0]', params: [count.toString()] };
+export const MaxArrayLength =
+  (count: number): ValidationFn =>
+  ({ value }) =>
+    isArray(value) && value.length <= count ? null : { message: 'Max array length is [0]', params: [count.toString()] };
