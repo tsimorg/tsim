@@ -107,11 +107,38 @@ export const Min =
   (limit: number): ValidationFn =>
   ({ value }) =>
     isNumber(value) && value >= limit ? null : { message: 'Min value is [0]', params: [limit.toString()] };
-export const MinArrayLength =
+export const ArrayMinLength =
   (count: number): ValidationFn =>
   ({ value }) =>
     isArray(value) && value.length >= count ? null : { message: 'Min array length is [0]', params: [count.toString()] };
-export const MaxArrayLength =
+export const ArrayMaxLength =
   (count: number): ValidationFn =>
   ({ value }) =>
     isArray(value) && value.length <= count ? null : { message: 'Max array length is [0]', params: [count.toString()] };
+export const ArrayContains =
+  (item: unknown): ValidationFn =>
+  ({ value }) =>
+    isArray(value) && value.includes(item) ? null : { message: 'Array does not contain item [0]', params: [item as string] };
+export const ArrayNotContains =
+  (item: unknown): ValidationFn =>
+  ({ value }) =>
+    isArray(value) && !value.includes(item) ? null : { message: 'Array contains forbidden item [0]', params: [item as string] };
+export const ArrayUnique =
+  (): ValidationFn =>
+  ({ value }) => {
+    const list = isArray(value) ? value : [];
+    const uniqueItems = new Set(list);
+    return isArray(value) && uniqueItems.size === value.length ? null : { message: 'Array contains duplicate items' };
+  };
+export const IsEmail =
+  (): ValidationFn =>
+  ({ value }) => {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return isString(value) && emailRegex.test(value) ? null : { message: 'Value is not valid email' };
+  };
+export const IsPattern =
+  (pattern: RegExp | string): ValidationFn =>
+  ({ value }) =>
+    isString(value) && (typeof pattern === 'string' ? new RegExp(pattern).test(value) : pattern.test(value))
+      ? null
+      : { message: 'Value does not match pattern [0]', params: [pattern.toString()] };
