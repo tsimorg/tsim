@@ -118,11 +118,11 @@ export const ArrayMaxLength =
 export const ArrayContains =
   (item: unknown): ValidationFn =>
   ({ value }) =>
-    isArray(value) && value.includes(item) ? null : { message: 'Array does not contain item [0]', params: [item as string] };
+    isArray(value) && value.includes(item) ? null : { message: 'Array does not contain item [0]', params: [String(item)] };
 export const ArrayNotContains =
   (item: unknown): ValidationFn =>
   ({ value }) =>
-    isArray(value) && !value.includes(item) ? null : { message: 'Array contains forbidden item [0]', params: [item as string] };
+    isArray(value) && !value.includes(item) ? null : { message: 'Array contains forbidden item [0]', params: [String(item)] };
 export const ArrayUnique =
   (): ValidationFn =>
   ({ value }) => {
@@ -136,9 +136,8 @@ export const IsEmail =
     const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return isString(value) && emailRegex.test(value) ? null : { message: 'Value is not valid email' };
   };
-export const IsPattern =
-  (pattern: RegExp | string): ValidationFn =>
-  ({ value }) =>
-    isString(value) && (typeof pattern === 'string' ? new RegExp(pattern).test(value) : pattern.test(value))
-      ? null
-      : { message: 'Value does not match pattern [0]', params: [pattern.toString()] };
+export const IsPattern = (pattern: RegExp | string): ValidationFn => {
+  const regex = typeof pattern === 'string' ? new RegExp(pattern) : pattern;
+  return ({ value }) =>
+    isString(value) && regex.test(value) ? null : { message: 'Value does not match pattern [0]', params: [pattern.toString()] };
+};
