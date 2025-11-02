@@ -1,6 +1,6 @@
-import { User, USER_DATA } from '@tsim/model-test/fixtures';
-import { Field } from '@tsim/model/field';
-import { deserialize } from '@tsim/model/transform';
+import { User, USER_DATA } from '../test/fixtures';
+import { Field } from './field';
+import { deserialize } from './transform';
 import {
   ArrayContains,
   ArrayMaxLength,
@@ -19,7 +19,7 @@ import {
   Min,
   MinLength,
   validate,
-} from '@tsim/model/validate';
+} from './validate';
 
 describe('validate', () => {
   it('should validate', () => {

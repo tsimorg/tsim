@@ -1,5 +1,5 @@
-import { registerFieldEffect } from '@tsim/model/effect';
-import { Field } from '@tsim/model/field';
+import { registerFieldEffect } from './effect';
+import { Field } from './field';
 
 describe('Effect', () => {
   it('should register/apply effect', () => {
