@@ -1,5 +1,5 @@
-import { Group, GROUP_DATA, User, USER_DATA } from '@tsim/model-test/fixtures';
-import { Model, ModelError } from '@tsim/model/model';
+import { Group, GROUP_DATA, User, USER_DATA } from '../test/fixtures';
+import { Model, ModelError } from './model';
 
 describe(Model.name, () => {
   it('should create instance', () => {

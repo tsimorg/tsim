@@ -1,8 +1,8 @@
-import { User, USER_DATA } from '@tsim/model-test/fixtures';
-import { Field } from '@tsim/model/field';
-import { Model } from '@tsim/model/model';
-import { deserialize, serialize } from '@tsim/model/transform';
 import { isDate } from 'lodash';
+import { User, USER_DATA } from '../test/fixtures';
+import { Field } from './field';
+import { Model } from './model';
+import { deserialize, serialize } from './transform';
 
 describe('transform', () => {
   describe('serialize', () => {

@@ -1,4 +1,4 @@
-import { Field, MinLength, Model } from '@tsim/model/index';
+import { Field, MinLength, Model } from '../src/index';
 
 export class Unknown {}
 

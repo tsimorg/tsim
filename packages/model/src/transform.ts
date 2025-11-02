@@ -1,5 +1,5 @@
-import { ClassType, Dictionary, FieldMeta, FieldsTarget } from '@tsim/model/types';
 import { get, isArray, isDate, isObject, isString, isUndefined, set } from 'lodash';
+import { ClassType, Dictionary, FieldMeta, FieldsTarget } from './types';
 
 export function serialize(target: object): Dictionary {
   const record: Dictionary = {};

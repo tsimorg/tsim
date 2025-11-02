@@ -1,4 +1,4 @@
-import { FieldEffect, FieldEffectInput } from '@tsim/model/types';
+import { FieldEffect, FieldEffectInput } from './types';
 
 const container: { effect: FieldEffect } = {
   effect: () => {},

@@ -5,6 +5,7 @@
   "author": "@tsim",
   "license": "ISC",
   "scripts": {
+    "precommit": "npm run build && npm run lint-fix && npm run test",
     "build": "npm run build-model",
     "build-model": "node build-pkg.js model",
     "publish-model": "(cd build/model && npm publish)",

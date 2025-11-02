@@ -1,5 +1,5 @@
-import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from '@tsim/model/types';
-import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isObject, isSet, isString, isUndefined } from 'lodash';
+import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isObject, isSet, isString } from 'lodash';
+import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from './types';
 
 export function validate(target: object): ValidationError[] {
   const proto: FieldsTarget = target.constructor.prototype;
@@ -9,7 +9,7 @@ export function validate(target: object): ValidationError[] {
   for (const [property, meta] of Object.entries(fields)) {
     const value = get(target, property);
     const params: ValidationParams = { target, property, value };
-    if (meta.required || !isUndefined(value)) {
+    if (meta.required || !isNil(value)) {
       if (meta.required) {
         const required = IsRequired()(params);
         if (required !== null) errors.push({ ...params, ...required });
