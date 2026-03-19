@@ -1,4 +1,4 @@
-import { cloneDeep, isArray } from 'lodash';
+import { cloneDeep } from 'es-toolkit/object';
 import { applyFieldEffect } from './effect';
 import { ClassType, Dictionary, FieldMeta, FieldMetaOptions, FieldOptions, FieldsTarget, ValidationFn } from './types';
 import { IsBoolean, IsDate, IsNumber, IsString } from './validate';
@@ -7,10 +7,10 @@ export function Field(type: ClassType | [ClassType], required: boolean, options:
   return (target: FieldsTarget, propertyKey: string | symbol) => {
     const property = propertyKey.toString();
     const metaOptions: FieldMetaOptions = {
-      isArray: isArray(type),
+      isArray: Array.isArray(type),
       ...options,
     };
-    const metaType = isArray(type) ? type[0] : type;
+    const metaType = Array.isArray(type) ? type[0] : type;
     const typeValidator = getTypeValidator(metaType);
     const validators: ValidationFn[] = [];
 

@@ -1,4 +1,5 @@
-import { get, isArray, isDate, isObject, isString, isUndefined, set } from 'lodash';
+import { get, isObject, set } from 'es-toolkit/compat';
+import { isDate, isString, isUndefined } from 'es-toolkit/predicate';
 import { ClassType, Dictionary, FieldMeta, FieldsTarget } from './types';
 
 export function serialize(target: object): Dictionary {
@@ -22,7 +23,7 @@ export function serialize(target: object): Dictionary {
     if (isUndefined(value)) continue;
     if (meta.options?.exclude) continue;
     if (meta.options?.isArray) {
-      value = isArray(value) ? value.map(item => tValue(item, property, meta)) : value;
+      value = Array.isArray(value) ? value.map(item => tValue(item, property, meta)) : value;
     } else {
       value = tValue(value, property, meta);
     }
@@ -53,7 +54,7 @@ export function deserialize<T extends object>(cls: ClassType<T>, data: Dictionar
     let value = data[meta.options?.alias ?? property];
     if (isUndefined(value)) continue;
     if (meta.options?.isArray) {
-      value = isArray(value) ? value.map(item => tValue(item, property, meta)) : value;
+      value = Array.isArray(value) ? value.map(item => tValue(item, property, meta)) : value;
     } else {
       value = tValue(value, property, meta);
     }

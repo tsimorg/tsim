@@ -1,4 +1,5 @@
-import { get, isArray, isBoolean, isDate, isMap, isNaN, isNil, isNumber, isObject, isSet, isString } from 'lodash';
+import { get, isObject } from 'es-toolkit/compat';
+import { isBoolean, isDate, isMap, isNil, isNumber, isSet, isString } from 'es-toolkit/predicate';
 import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from './types';
 
 export function validate(target: object): ValidationError[] {
@@ -18,7 +19,7 @@ export function validate(target: object): ValidationError[] {
         const arrayValid = IsArray()(params);
         if (arrayValid !== null) {
           errors.push({ ...params, ...arrayValid });
-        } else if (isArray(value)) {
+        } else if (Array.isArray(value)) {
           if (meta.options?.arrayValidators) {
             errors.push(...validateField(params, meta, meta.options?.arrayValidators));
           }
@@ -54,7 +55,7 @@ export const IsRequired =
 export const IsArray =
   (): ValidationFn =>
   ({ value }) =>
-    isArray(value) ? null : { message: 'Value is not array' };
+    Array.isArray(value) ? null : { message: 'Value is not array' };
 export const IsObject =
   (): ValidationFn =>
   ({ value }) =>
@@ -110,25 +111,25 @@ export const Min =
 export const ArrayMinLength =
   (count: number): ValidationFn =>
   ({ value }) =>
-    isArray(value) && value.length >= count ? null : { message: 'Min array length is [0]', params: [count.toString()] };
+    Array.isArray(value) && value.length >= count ? null : { message: 'Min array length is [0]', params: [count.toString()] };
 export const ArrayMaxLength =
   (count: number): ValidationFn =>
   ({ value }) =>
-    isArray(value) && value.length <= count ? null : { message: 'Max array length is [0]', params: [count.toString()] };
+    Array.isArray(value) && value.length <= count ? null : { message: 'Max array length is [0]', params: [count.toString()] };
 export const ArrayContains =
   (item: unknown): ValidationFn =>
   ({ value }) =>
-    isArray(value) && value.includes(item) ? null : { message: 'Array does not contain item [0]', params: [String(item)] };
+    Array.isArray(value) && value.includes(item) ? null : { message: 'Array does not contain item [0]', params: [String(item)] };
 export const ArrayNotContains =
   (item: unknown): ValidationFn =>
   ({ value }) =>
-    isArray(value) && !value.includes(item) ? null : { message: 'Array contains forbidden item [0]', params: [String(item)] };
+    Array.isArray(value) && !value.includes(item) ? null : { message: 'Array contains forbidden item [0]', params: [String(item)] };
 export const ArrayUnique =
   (): ValidationFn =>
   ({ value }) => {
-    const list = isArray(value) ? value : [];
+    const list = Array.isArray(value) ? value : [];
     const uniqueItems = new Set(list);
-    return isArray(value) && uniqueItems.size === value.length ? null : { message: 'Array contains duplicate items' };
+    return Array.isArray(value) && uniqueItems.size === value.length ? null : { message: 'Array contains duplicate items' };
   };
 export const IsEmail =
   (): ValidationFn =>

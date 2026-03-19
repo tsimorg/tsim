@@ -1,4 +1,4 @@
-import { isDate } from 'lodash';
+import { isDate } from 'es-toolkit/predicate';
 import { User, USER_DATA } from '../test/fixtures';
 import { Field } from './field';
 import { Model } from './model';
