@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
+    "rootDir": "./src",
     "declarationDir": "../../build/model/types",
     "outDir": "../../build/model/cjs"
   },

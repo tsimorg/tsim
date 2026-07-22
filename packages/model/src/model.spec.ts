@@ -31,7 +31,7 @@ describe(Model.name, () => {
   });
 
   it('should fail to create', () => {
-    expect(() => User.create({})).toThrowError('User has failed validations');
+    expect(() => User.create({})).toThrow('User has failed validations');
   });
 
   it('should get fields', () => {

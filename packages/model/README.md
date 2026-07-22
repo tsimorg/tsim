@@ -13,7 +13,7 @@ npm install @tsim/model --save
 ## serialize
 
 ```typescript
-import { serialize } from '@tsim/model/transform';
+import { serialize } from '@tsim/model';
 
 const userData = serialize(user);
 ```
@@ -21,7 +21,7 @@ const userData = serialize(user);
 ## deserialize
 
 ```typescript
-import { deserialize } from '@tsim/model/transform';
+import { deserialize } from '@tsim/model';
 
 const user = deserialize(UserEntity, userData);
 ```
@@ -29,8 +29,7 @@ const user = deserialize(UserEntity, userData);
 ## validate
 
 ```typescript
-import { deserialize } from '@tsim/model/transform';
-import { validate } from '@tsim/model/validate';
+import { deserialize, validate } from '@tsim/model';
 
 const user = deserialize(UserEntity, userData);
 const errors = validate(user);
@@ -41,7 +40,7 @@ const errors = validate(user);
 This method combine both transform and validation together.
 
 ```typescript
-import { create } from '@tsim/model/model';
+import { create } from '@tsim/model';
 
 const user = create(UserEntity, userData);
 ```
@@ -49,7 +48,7 @@ const user = create(UserEntity, userData);
 ## createList
 
 ```typescript
-import { createList } from '@tsim/model/model';
+import { createList } from '@tsim/model';
 
 const users = createList(UserEntity, usersDataList);
 ```

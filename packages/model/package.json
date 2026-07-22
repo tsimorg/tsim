@@ -2,6 +2,6 @@
   "name": "@tsim/model",
   "version": "2.0.0",
   "dependencies": {
-    "lodash": "4.x"
+    "es-toolkit": "^1.49.0"
   }
 }
