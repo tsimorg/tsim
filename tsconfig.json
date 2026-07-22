@@ -15,12 +15,7 @@
     "target": "ES2022",
     "module": "CommonJS",
     "useDefineForClassFields": false,
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
-    "types": [
-      "vitest/globals"
-    ]
+    "lib": ["ES2022", "dom"],
+    "types": ["vitest/globals"]
   }
 }
