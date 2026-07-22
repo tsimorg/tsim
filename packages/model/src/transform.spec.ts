@@ -1,4 +1,4 @@
-import { isDate } from 'lodash';
+import { isDate } from 'es-toolkit';
 import { User, USER_DATA } from '../test/fixtures';
 import { Field } from './field';
 import { Model } from './model';
@@ -24,6 +24,25 @@ describe('transform', () => {
 
       expect(result).toEqual({ createdAt: model.createdAt.getTime() });
     });
+
+    it('should serialize a target with no registered fields', () => {
+      const result = serialize({});
+
+      expect(result).toEqual({});
+    });
+
+    it('should leave a non-array value untouched for an array field', () => {
+      class TestModel extends Model {
+        @Field([String], false)
+        values?: string[];
+      }
+
+      const model = new TestModel();
+      model.values = 'not-an-array' as unknown as string[];
+      const result = serialize(model);
+
+      expect(result).toEqual({ values: 'not-an-array' });
+    });
   });
 
   describe('deserialize', () => {
@@ -43,6 +62,36 @@ describe('transform', () => {
       const model = deserialize(TestModel, data);
 
       expect(model.createdAt).toBeInstanceOf(Date);
+    });
+
+    it('should deserialize a class with no registered fields', () => {
+      class Empty {}
+
+      const model = deserialize(Empty, { foo: 'bar' });
+
+      expect(model).toBeInstanceOf(Empty);
+    });
+
+    it('should leave a non-array value untouched for an array field', () => {
+      class TestModel extends Model {
+        @Field([String], false)
+        values?: string[];
+      }
+
+      const model = deserialize(TestModel, { values: 'not-an-array' });
+
+      expect(model.values).toBe('not-an-array');
+    });
+
+    it('should not convert an already correctly-typed falsy value', () => {
+      class TestModel extends Model {
+        @Field(Boolean, true)
+        isActive!: boolean;
+      }
+
+      const model = deserialize(TestModel, { isActive: false });
+
+      expect(model.isActive).toBe(false);
     });
   });
 });

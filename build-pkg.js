@@ -1,5 +1,5 @@
+/* eslint-disable @typescript-eslint/no-require-imports */
 /* eslint-disable no-undef */
-/* eslint-disable @typescript-eslint/no-var-requires */
 const { exec } = require('node:child_process');
 const { writeFileSync, rmSync, copyFileSync } = require('node:fs');
 const process = require('node:process');

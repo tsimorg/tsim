@@ -3,7 +3,7 @@ import { Field } from './field';
 
 describe('Effect', () => {
   it('should register/apply effect', () => {
-    const effect = jest.fn();
+    const effect = vi.fn();
 
     registerFieldEffect(effect);
 

@@ -31,7 +31,7 @@ describe(Model.name, () => {
   });
 
   it('should fail to create', () => {
-    expect(() => User.create({})).toThrowError('User has failed validations');
+    expect(() => User.create({})).toThrow('User has failed validations');
   });
 
   it('should get fields', () => {
@@ -70,6 +70,12 @@ describe(Model.name, () => {
       message: 'Model Validation Exception',
       errors: { User: { id: ['Value is required'] } },
     });
+  });
+
+  it('should default to a generic message when none is provided', () => {
+    const error = new ModelError('User', [{ target: {}, property: 'id', value: null }]);
+
+    expect(error.serialize()).toEqual('{"User":{"id":["Failed validation"]}}');
   });
 
   it('should serialize error with children', () => {

@@ -37,6 +37,36 @@ describe('validate', () => {
     expect(errors[0].property).toBe('age');
   });
 
+  it('should validate IsBoolean with a non-boolean value', () => {
+    class ModelClass {
+      @Field(Boolean, true)
+      value!: boolean;
+    }
+
+    const model = new ModelClass();
+    model.value = 'not-a-boolean' as unknown as boolean;
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(1);
+    expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate a field with no validators defined in its metadata', () => {
+    class ModelClass {
+      value!: string;
+    }
+
+    (ModelClass.prototype as unknown as { __fields: object }).__fields = {
+      value: { required: true, type: String, options: undefined },
+    };
+
+    const model = new ModelClass();
+    model.value = 'anything';
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate IsObject', () => {
     class ModelClass {
       @Field(Object, true, { validators: [IsObject()] })
@@ -50,6 +80,18 @@ describe('validate', () => {
     expect(errors[0].property).toBe('value');
   });
 
+  it('should validate IsObject with a valid object', () => {
+    class ModelClass {
+      @Field(Object, true, { validators: [IsObject()] })
+      value!: object;
+    }
+
+    const model = deserialize(ModelClass, { value: { foo: 'bar' } });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate IsIn', () => {
     class ModelClass {
       @Field(String, true, { validators: [IsIn(['foo', 'bar'])] })
@@ -61,6 +103,18 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate IsIn with an allowed value', () => {
+    class ModelClass {
+      @Field(String, true, { validators: [IsIn(['foo', 'bar'])] })
+      value!: string;
+    }
+
+    const model = deserialize(ModelClass, { value: 'foo' });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
   });
 
   it('should validate IsInstance', () => {
@@ -81,6 +135,23 @@ describe('validate', () => {
     expect(errors[0].property).toBe('child');
   });
 
+  it('should validate IsInstance with a matching instance', () => {
+    class ChildClass {
+      @Field(String, true)
+      value!: string;
+    }
+
+    class ModelClass {
+      @Field(ChildClass, true, { validators: [IsInstance(ChildClass)], nested: true })
+      child!: ChildClass;
+    }
+
+    const model = deserialize(ModelClass, { child: { value: '123' } });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate IsMap', () => {
     class ModelClass {
       @Field(Map, true, { validators: [IsMap()] })
@@ -92,6 +163,19 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate IsMap with a Map instance', () => {
+    class ModelClass {
+      @Field(Map, true, { validators: [IsMap()] })
+      value!: Map<string, string>;
+    }
+
+    const model = new ModelClass();
+    model.value = new Map([['foo', 'bar']]);
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
   });
 
   it('should validate IsSet', () => {
@@ -107,6 +191,19 @@ describe('validate', () => {
     expect(errors[0].property).toBe('value');
   });
 
+  it('should validate IsSet with a Set instance', () => {
+    class ModelClass {
+      @Field(Array, true, { validators: [IsSet()] })
+      value!: Set<string>;
+    }
+
+    const model = new ModelClass();
+    model.value = new Set(['foo', 'bar']);
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate MaxLength', () => {
     class ModelClass {
       @Field(String, true, { validators: [MaxLength(2)] })
@@ -118,6 +215,18 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate MaxLength with a value within the limit', () => {
+    class ModelClass {
+      @Field(String, true, { validators: [MaxLength(2)] })
+      value!: string;
+    }
+
+    const model = deserialize(ModelClass, { value: 'ab' });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
   });
 
   it('should validate MinLength', () => {
@@ -146,6 +255,18 @@ describe('validate', () => {
     expect(errors[0].property).toBe('value');
   });
 
+  it('should validate Max with a value within the limit', () => {
+    class ModelClass {
+      @Field(Number, true, { validators: [Max(2)] })
+      value!: number;
+    }
+
+    const model = deserialize(ModelClass, { value: 1 });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
+  });
+
   it('should validate Min', () => {
     class ModelClass {
       @Field(Number, true, { validators: [Min(2)] })
@@ -157,6 +278,18 @@ describe('validate', () => {
 
     expect(errors).toHaveLength(1);
     expect(errors[0].property).toBe('value');
+  });
+
+  it('should validate Min with a value within the limit', () => {
+    class ModelClass {
+      @Field(Number, true, { validators: [Min(2)] })
+      value!: number;
+    }
+
+    const model = deserialize(ModelClass, { value: 3 });
+    const errors = validate(model);
+
+    expect(errors).toHaveLength(0);
   });
 
   describe('ArrayMinLength', () => {
@@ -265,6 +398,19 @@ describe('validate', () => {
 
       expect(errors).toHaveLength(0);
     });
+
+    it('should validate IsPattern given a string pattern', () => {
+      class ModelClass {
+        @Field(String, true, { validators: [IsPattern('^[a-z]+$')] })
+        value!: string;
+      }
+
+      const invalid = deserialize(ModelClass, { value: 'Invalid123' });
+      expect(validate(invalid)).toHaveLength(1);
+
+      const valid = deserialize(ModelClass, { value: 'valid' });
+      expect(validate(valid)).toHaveLength(0);
+    });
   });
 
   describe('ArrayContains', () => {
@@ -342,6 +488,51 @@ describe('validate', () => {
       }
 
       const model = deserialize(ModelClass, { values: ['foo', 'bar', 'baz'] });
+      const errors = validate(model);
+
+      expect(errors).toHaveLength(0);
+    });
+
+    it('should fail ArrayUnique when called with a non-array value', () => {
+      const result = ArrayUnique()({ target: {}, property: 'values', value: 'not-an-array' });
+
+      expect(result).toEqual({ message: 'Array contains duplicate items' });
+    });
+  });
+
+  describe('nested validation', () => {
+    it('should collect nested validation errors as children', () => {
+      class Child {
+        @Field(String, true, { validators: [MinLength(3)] })
+        title!: string;
+      }
+
+      class Parent {
+        @Field(Child, true, { nested: true })
+        child!: Child;
+      }
+
+      const model = deserialize(Parent, { child: { title: 'ab' } });
+      const errors = validate(model);
+
+      expect(errors).toHaveLength(1);
+      expect(errors[0].property).toBe('child');
+      expect(errors[0].children).toHaveLength(1);
+      expect(errors[0].children?.[0].property).toBe('title');
+    });
+
+    it('should not add children when the nested model is valid', () => {
+      class Child {
+        @Field(String, true, { validators: [MinLength(3)] })
+        title!: string;
+      }
+
+      class Parent {
+        @Field(Child, true, { nested: true })
+        child!: Child;
+      }
+
+      const model = deserialize(Parent, { child: { title: 'abc' } });
       const errors = validate(model);
 
       expect(errors).toHaveLength(0);
