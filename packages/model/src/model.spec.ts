@@ -72,6 +72,12 @@ describe(Model.name, () => {
     });
   });
 
+  it('should default to a generic message when none is provided', () => {
+    const error = new ModelError('User', [{ target: {}, property: 'id', value: null }]);
+
+    expect(error.serialize()).toEqual('{"User":{"id":["Failed validation"]}}');
+  });
+
   it('should serialize error with children', () => {
     const error = new ModelError('User', [
       {

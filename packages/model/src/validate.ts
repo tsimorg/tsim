@@ -1,5 +1,5 @@
-import { isBoolean, isDate, isMap, isNil, isNumber, isSet, isString } from 'es-toolkit';
-import { get, isObject } from 'es-toolkit/compat';
+import { isBoolean, isDate, isMap, isNil, isSet, isString } from 'es-toolkit';
+import { get, isNumber, isObject } from 'es-toolkit/compat';
 import { ClassType, FieldMeta, FieldsTarget, ValidationError, ValidationFn, ValidationParams } from './types';
 
 export function validate(target: object): ValidationError[] {
@@ -75,7 +75,7 @@ export const IsBoolean =
 export const IsNumber =
   (): ValidationFn =>
   ({ value }) =>
-    isNumber(value) && !Number.isNaN(value) ? null : { message: 'Value is not number' };
+    isNumber(value) && !Number.isNaN(Number(value)) ? null : { message: 'Value is not number' };
 export const IsDate =
   (): ValidationFn =>
   ({ value }) =>
